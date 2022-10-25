@@ -1,3 +1,9 @@
+## My Reads Project
+
+final assessment project for Udacity's React Fundamentals course. 
+The main page shows three shelves for books "Currently Reading", "Want To Read" & "Read"
+Also a link to a search folder and Search results on the search page allow the user to select “Currently Reading”, “Want to Read”, or “Read” to place the book in a certain shelf.
+
 ## Get Started
 
 To get started developing right away:
