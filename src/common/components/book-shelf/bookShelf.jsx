@@ -1,4 +1,4 @@
-import ChangerDropdown from "../changer-dropdown/changerDropdown";
+import ChangerDropdown from "../../../my-reads/components/changer-dropdown/changerDropdown";
 
 function BookShelf(props) {
   const { books } = props;
@@ -13,9 +13,9 @@ function BookShelf(props) {
 
     <div className="bookshelf-books">
       <ol className="books-grid">
-        {books && books.length > 0 ? (books.map((book) => {
+        {books && books.length > 0 ? (books.map((book, index) => {
           return (
-            <li key={book.title}>
+            <li key={index}>
               <div className="book">
                 <div className="book-top">
                   <div
@@ -27,10 +27,10 @@ function BookShelf(props) {
                         `url(${book.imageLinks.thumbnail})`,
                     }}
                   ></div>
-                  <ChangerDropdown selectedOption={onOptionChange} book={book} key={book.title} />
+                  <ChangerDropdown selectedOption={onOptionChange} book={book} key={index} />
                 </div>
                 <div className="book-title"> {book.title}</div>
-                <div className="book-authors">{book.authors[0]}</div>
+                <div className="book-authors">{book.authors && book.authors.length ? book.authors[0]: ''}</div>
               </div>
             </li>
           )

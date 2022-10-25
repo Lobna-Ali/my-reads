@@ -1,7 +1,7 @@
 import "./App.css";
-import MyReads from "./components/my-reads/myReads";
-import Search from "./components/search/search";
 import { BrowserRouter as Router, useRoutes } from "react-router-dom";
+import MyReads from "./my-reads/myReads";
+import Search  from "./search/search";
 
 
 function App() {

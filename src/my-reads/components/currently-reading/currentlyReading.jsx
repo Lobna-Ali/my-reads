@@ -1,5 +1,4 @@
-import BookShelf from "../book-shelf/bookShelf";
-import ChangerDropdown from "../changer-dropdown/changerDropdown";
+import BookShelf from "../../../common/components/book-shelf/bookShelf";
 
 function CurrentlyReading(props) {
 
