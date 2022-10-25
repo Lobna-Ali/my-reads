@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import { search, update } from "../BooksAPI";
 import BookShelf from "../common/components/book-shelf/bookShelf";
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 function Search() {
   const [booksAfterSearch, setBooksAfterSearch] = useState([]);
   const [searchValue, setSearchValue] = useState('');
-  const [callSearchApi, setCallSearchApi] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(async () => {
-    if (searchValue || callSearchApi) {
+    if (searchValue) {
       const result = await search(searchValue, 20);
       console.log(result.hasOwnProperty('error'), result)
       if (!result.hasOwnProperty('error') && result.length > 0) {
@@ -21,9 +19,8 @@ function Search() {
     } else if (!searchValue) {
       setBooksAfterSearch(new Array());
     }
-    setCallSearchApi(false);
 
-  }, [searchValue, callSearchApi]);
+  }, [searchValue]);
 
   const setSearchInput = (value) => {
     setSearchValue(value)
@@ -32,18 +29,17 @@ function Search() {
 
   const updatedBook = async (selectedData) => {
     await update(selectedData.selectedBook, selectedData.selectedOption);
-    setCallSearchApi(true);
   }
 
   return (
     <div className="search-books">
       <div className="search-books-bar">
-        <a
+        <Link
           className="close-search"
-          onClick={() => navigate('/')}
+          to= '/'
         >
           Close
-        </a>
+        </Link>
         <div className="search-books-input-wrapper">
           <input
             onChange={(e) => setSearchInput(e.target.value)}
@@ -53,11 +49,9 @@ function Search() {
         </div>
       </div>
       <div>
-        {callSearchApi ? (
-          <div className="spinner"><img src="http://pa1.narvii.com/7685/ecc3cbe5a8f3ef7c513c4abc69474e2c1a9da8cer1-200-200_00.gif" alt="Loading ...." /> </div>) : (
           <div className="search-books-results">
             <BookShelf onMovingBook={updatedBook} books={booksAfterSearch} />
-          </div>)}
+          </div>
       </div>
     </div>
   )

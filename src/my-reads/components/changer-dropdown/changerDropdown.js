@@ -5,14 +5,14 @@ function ChangerDropdown (props) {
   }
     return (
         <div className="book-shelf-changer">
-        <select defaultValue='None' onChange={e => selectedOption(e.target.value)}>
+        <select defaultValue={props.book.shelf || 'None'} onChange={e => selectedOption(e.target.value)}>
           <option  value="None" disabled>
             Move to...
           </option>
           <option  value="currentlyReading">Currently Reading</option>
           <option  value="wantToRead">Want to Read</option>
           <option  value="read">Read</option>
-          <option   value="none">None</option>
+          {props.book.shelf ? <option   value="none">None</option>: null}
         </select>
       </div>
     )
