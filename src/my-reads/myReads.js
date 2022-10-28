@@ -1,29 +1,30 @@
 import { useEffect, useState } from 'react';
 import { getAll, update } from '../BooksAPI'
 import { useNavigate } from 'react-router-dom';
-import CurrentlyReading from "./components/currently-reading/currentlyReading";
-import WantToRead from "./components/want-to-read/wantToRead";
-import Read from "./components/read/read";
+import BookShelf from '../common/components/book-shelf/bookShelf';
+import { getBooksData, setBooksData } from '../services/books.service';
 function MyReads() {
-    const [data, setData] = useState([]);
+    const [data, setData] = useState(getBooksData());
     const [readedBooks, setReadedBooks] = useState([]);
     const [currentlyReading, setCurrentlyReading] = useState([]);
     const [wantToRead, setWantToRead] = useState([]);
+    const [updateShelfs, setUpdateShelfs] = useState(false);
 
     useEffect(async () => {
         if (data && data.length < 1) {
             const result = await getAll();
             setData([...result]);
+            setBooksData(result);
         }
 
     }, [data]);
 
     useEffect(() => {
-        if (data && data.length > 0 && (readedBooks.length < 1 || currentlyReading.length < 1 || wantToRead.length < 1)) {
+        if (data && data.length > 0 && ((readedBooks.length < 1 || currentlyReading.length < 1 || wantToRead.length < 1) || updateShelfs)) {
             setDetailsForBooks();
 
         }
-    }, [data]);
+    }, [data, updateShelfs]);
 
     function setDetailsForBooks() {
         setWantToRead((data.filter((book) => book.shelf === 'wantToRead')))
@@ -33,11 +34,18 @@ function MyReads() {
     }
 
     const updateBookDetails = async (updateBookDetails) => {
+        updateBookDetails.selectedBook.shelf = updateBookDetails.selectedOption;
+        updatebookShelfs(updateBookDetails.selectedBook);
         await update(updateBookDetails.selectedBook, updateBookDetails.selectedOption);
-        setData([]);
-        setWantToRead([]);
-        setReadedBooks([]);
-        setCurrentlyReading([]);
+
+    }
+
+    const updatebookShelfs = (book) => {
+        const updatedData = [...data];
+        updatedData[updatedData.findIndex(el => el.id === book.id)] = book;
+        setData([...updatedData]);
+        setUpdateShelfs(true);
+
     }
     const navigate = useNavigate();
     return (
@@ -48,10 +56,20 @@ function MyReads() {
                 </div>
                 <div className="list-books-content">
                     <div>
-                        <CurrentlyReading onSelectedBookUpdated={updateBookDetails} currentlyReading={currentlyReading} />
-                        <WantToRead onSelectedBookUpdated={updateBookDetails} wantToRead={wantToRead} />
-                        <Read onSelectedBookUpdated={updateBookDetails} readedBooks={readedBooks} />
+                        <div className="bookshelf">
+                            <h2 className="bookshelf-title">Currently Reading</h2>
+                            <BookShelf onMovingBook={updateBookDetails} books={currentlyReading} />
 
+                        </div>
+                        <div className="bookshelf">
+                            <h2 className="bookshelf-title">Want to Read</h2>
+                            <BookShelf onMovingBook={updateBookDetails} books={wantToRead} />
+                        </div>
+                        <div className="bookshelf">
+                            <h2 className="bookshelf-title">Read</h2>
+                            <BookShelf onMovingBook={updateBookDetails} books={readedBooks} />
+
+                        </div>
                     </div>
                 </div>
                 <div className="open-search">
