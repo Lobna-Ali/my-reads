@@ -27,10 +27,10 @@ function BookShelf(props) {
                         `url(${book.imageLinks? book.imageLinks.thumbnail: ''})`,
                     }}
                   ></div>
-                  <ChangerDropdown selectedOption={onOptionChange} book={book} key={index} />
+                  <ChangerDropdown search = {props.search} selectedOption={onOptionChange} book={book} key={index} />
                 </div>
                 <div className="book-title"> {book.title}</div>
-                <div className="book-authors">{book.authors && book.authors.length ? book.authors.map((author, index) => author +  (book.authors.length > 1 && index < (book.authors.length - 1)  ?',' : '')): ''}</div>
+                <div className="book-authors">{book.authors && book.authors.join(", ")}</div>
               </div>
             </li>
           )

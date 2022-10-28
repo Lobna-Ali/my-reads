@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react';
 import { getAll, update } from '../BooksAPI'
 import { useNavigate } from 'react-router-dom';
 import BookShelf from '../common/components/book-shelf/bookShelf';
-import { getBooksData, setBooksData } from '../services/books.service';
-function MyReads() {
-    const [data, setData] = useState(getBooksData());
+function MyReads(props) {
+    const [data, setData] = useState(props.books || []);
     const [readedBooks, setReadedBooks] = useState([]);
     const [currentlyReading, setCurrentlyReading] = useState([]);
     const [wantToRead, setWantToRead] = useState([]);
@@ -14,7 +13,7 @@ function MyReads() {
         if (data && data.length < 1) {
             const result = await getAll();
             setData([...result]);
-            setBooksData(result);
+            props.onBooksUpdated([...result]);
         }
 
     }, [data]);
@@ -44,6 +43,7 @@ function MyReads() {
         const updatedData = [...data];
         updatedData[updatedData.findIndex(el => el.id === book.id)] = book;
         setData([...updatedData]);
+        props.onBooksUpdated([...updatedData]);
         setUpdateShelfs(true);
 
     }

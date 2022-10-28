@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { search, update } from "../BooksAPI";
 import BookShelf from "../common/components/book-shelf/bookShelf";
 import { Link } from 'react-router-dom';
-import { getBooksData, setBooksData } from "../services/books.service";
 
-function Search() {
+function Search(props) {
+
   const [booksAfterSearch, setBooksAfterSearch] = useState([]);
+  const [dataFromMyReads, setDataFromMyReads] = useState(props.books || []);
   const [searchValue, setSearchValue] = useState('');
 
+  console.log('test', props.books)
   useEffect(async () => {
     if (searchValue) {
       const result = await search(searchValue, 20);
@@ -29,7 +31,6 @@ function Search() {
   }
 
   const updatedBook = async (selectedData) => {
-    const dataFromMyReads = getBooksData();
     const selectedBook = { ...selectedData.selectedBook, shelf: selectedData.selectedOption };
     const indexOfMyReadsBook = dataFromMyReads.findIndex(el => el.id === selectedData.selectedBook.id);
     if (indexOfMyReadsBook > - 1) {
@@ -37,14 +38,14 @@ function Search() {
     } else {
       dataFromMyReads.push(selectedBook);
     }
+    setDataFromMyReads([...dataFromMyReads]);
+
     booksAfterSearch[booksAfterSearch.findIndex(el => el.id === selectedBook.id)] = selectedBook;
     setBooksAfterSearch([...booksAfterSearch]);
-    setBooksData([...dataFromMyReads]);
     await update(selectedData.selectedBook, selectedData.selectedOption);
   }
 
   const enrichBooksWithShelf = (searchResults) => {
-    const dataFromMyReads = getBooksData();
     dataFromMyReads.forEach((book) => {
       searchResults[searchResults.findIndex(el => el.id === book.id)] = book;
     });
@@ -57,6 +58,10 @@ function Search() {
         <Link
           className="close-search"
           to='/'
+          onClick={() => {
+
+            props.onBooksUpdated([...dataFromMyReads]);
+          }}
         >
           Close
         </Link>
@@ -70,7 +75,7 @@ function Search() {
       </div>
       <div>
         <div className="search-books-results">
-          <BookShelf onMovingBook={updatedBook} books={booksAfterSearch} />
+          <BookShelf onMovingBook={updatedBook} search={true} books={booksAfterSearch} />
         </div>
       </div>
     </div>
